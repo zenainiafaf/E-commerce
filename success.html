@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement Réussi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              custom: {
+                bg: '#D5A26A',
+                container: '#A56D47',
+                button: '#F5E8C7',
+                buttonText: '#6D5C4A'
+              }
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-custom-bg text-white">
+
+    <div class="bg-custom-container shadow-lg rounded-lg p-6 text-center max-w-md">
+        <div class="text-green-400 text-6xl animate-bounce">✅</div>
+        <h1 class="text-2xl font-semibold mt-4">Paiement Réussi 🎉</h1>
+        <p class="text-gray-300 mt-2">Merci pour votre achat !</p>
+        <p class="text-gray-400 text-sm">Cliquez sur le bouton ci-dessous pour retourner à la boutique.</p>
+        <a href="/" class="inline-block mt-4 px-4 py-2 bg-custom-button text-custom-buttonText rounded-lg hover:bg-amber-200 transition">
+            Retour à la boutique
+        </a>
+    </div>
+
+</body>
+</html>

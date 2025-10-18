@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrateur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border-bottom: 3px solid #0d6efd;
+        }
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-4">
+        <h1 class="mb-4"><i class="bi bi-shield-lock"></i> Panel Administrateur</h1>
+        
+        <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products" type="button" role="tab">Produits</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="auctions-tab" data-bs-toggle="tab" data-bs-target="#auctions" type="button" role="tab">Enchères</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">Utilisateurs</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">Commandes</button>
+            </li>
+        </ul>
+
+        <div class="tab-content p-3 border border-top-0 rounded-bottom" id="adminTabsContent">
+            <!-- Onglet Produits -->
+           <div class="tab-pane fade show active" id="products" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-section">
+                                    <h4><i class="bi bi-plus-circle"></i> Ajouter un produit</h4>
+                                    <form id="addProductForm" enctype="multipart/form-data">
+                                        <div class="mb-3">
+                                            <label class="form-label">Nom</label>
+                                            <input type="text" class="form-control" name="name" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Marque</label>
+                                            <input type="text" step="0.01" class="form-control" name="brand" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Style</label>
+                                            <input type="text" step="0.01" class="form-control" name="bag_style" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Matiére</label>
+                                            <input type="text" step="0.01" class="form-control" name="skin_type" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Matiére intérieure</label>
+                                            <input type="text" step="0.01" class="form-control" name="inner_material" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Couleur</label>
+                                            <input type="text" step="0.01" class="form-control" name="major_color" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Volume</label>
+                                            <input type="number" step="0.01" class="form-control" name="volume" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Accessories</label>
+                                            <input type="text" step="0.01" class="form-control" name="accessories" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Prix</label>
+                                            <input type="number" step="0.01" class="form-control" name="price" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Stock</label>
+                                            <input type="number" class="form-control" name="stock" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Image</label>
+                                            <input type="file" class="form-control" name="image" accept="image/*" required>
+                                        </div>
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" name="is_auction">
+                                            <label class="form-check-label">Produit pour enchère</label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h4><i class="bi bi-list-ul"></i> Liste des produits</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Image</th>
+                                                <th>Nom</th>
+                                                <th>Prix</th>
+                                                <th>Stock</th>
+                                                <th>Marque</th>
+                                                <th>Style</th>
+                                                <th>Matiére</th>
+                                                <th>Matiére interieure</th>
+                                                <th>Volume</th>
+                                                <th>Accessoires</th>
+                                                <th>Couleur</th>
+                                                <th>Enchère</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for product in products %}
+                                            <tr>
+                                                <td>{{ product.id }}</td>
+                                                <td><img src="{{ url_for('static', filename='images/' + product.image) }}" width="50"></td>
+                                                <td>{{ product.name }}</td>
+                                                <td>{{ product.price }} €</td>
+                                                <td>{{ product.stock }}</td>
+                                                <td>{{ product.brand }}</td>
+                                                <td>{{ product.bag_style }}</td>
+                                                <td>{{ product.skin_type }}</td>
+                                                <td>{{ product.inner_material }}</td>
+                                                <td>{{ product.major_color }}</td>
+                                                <td>{{ product.volume }}</td>
+                                                <td>{{ product.accessories }}</td>
+                                                <td>
+                                                    {% if product.is_auction %}
+                                                        <span class="badge bg-success">Oui</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">Non</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-warning edit-product" data-id="{{ product.id }}">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-danger delete-product" data-id="{{ product.id }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+            <!-- Onglet Enchères -->
+            <div class="tab-pane fade" id="auctions" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-section">
+                            <h4><i class="bi bi-plus-circle"></i> Créer une enchère</h4>
+                            <form id="addAuctionForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Produit</label>
+                                    <select class="form-select" name="product_id" required>
+                                        <option value="">Sélectionner un produit</option>
+                                        {% for product in products %}
+                                            {% if product.is_auction and product.stock > 0 %}
+                                                <option value="{{ product.id }}">{{ product.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Date de début</label>
+                                    <input type="datetime-local" class="form-control" name="start_time" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Date de fin</label>
+                                    <input type="datetime-local" class="form-control" name="end_time" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Créer</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <h4><i class="bi bi-hourglass-split"></i> Enchères en cours</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Produit</th>
+                                        <th>Début</th>
+                                        <th>Fin</th>
+                                        <th>Statut</th>
+                                        <th>Meilleure offre</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for auction in active_auctions %}
+                                    <tr>
+                                        <td>{{ auction.id }}</td>
+                                        <td>{{ auction.product.name }}</td>
+                                        <td>{{ auction.start_time.strftime('%d/%m/%Y %H:%M') }}</td>
+                                        <td>{{ auction.end_time.strftime('%d/%m/%Y %H:%M') }}</td>
+                                        <td>
+                                            {% if auction.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Terminée</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% set highest_bid = auction.bids|sort(attribute='amount', reverse=true)|first %}
+                                            {% if highest_bid %}
+                                                {{ highest_bid.amount }} € par {{ highest_bid.user_email }}
+                                            {% else %}
+                                                Aucune offre
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning edit-auction" data-id="{{ auction.id }}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete-auction" data-id="{{ auction.id }}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4 class="mt-4"><i class="bi bi-hourglass-bottom"></i> Enchères terminées</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Produit</th>
+                                        <th>Début</th>
+                                        <th>Fin</th>
+                                        <th>Vainqueur</th>
+                                        <th>Prix final</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for auction, highest_bid in ended_auctions %}
+                                    <tr>
+                                        <td>{{ auction.id }}</td>
+                                        <td>{{ auction.product.name }}</td>
+                                        <td>{{ auction.start_time.strftime('%d/%m/%Y %H:%M') }}</td>
+                                        <td>{{ auction.end_time.strftime('%d/%m/%Y %H:%M') }}</td>
+                                        <td>
+                                            {% if highest_bid %}
+                                                {{ highest_bid.user_email }}
+                                            {% else %}
+                                                Aucun
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if highest_bid %}
+                                                {{ highest_bid.amount }} €
+                                            {% else %}
+                                                Non vendu
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Utilisateurs -->
+<div class="tab-pane fade" id="users" role="tabpanel">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-section">
+                <h4><i class="bi bi-person-plus"></i> Ajouter un utilisateur</h4>
+                <form id="addUserForm">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" name="is_admin">
+                        <label class="form-check-label">Administrateur</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h4><i class="bi bi-people"></i> Liste des utilisateurs</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.is_admin %}
+                                    <span class="badge bg-danger">Admin</span>
+                                {% else %}
+                                    <span class="badge bg-primary">Utilisateur</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.created_at.strftime('%d/%m/%Y') if user.created_at else 'N/A' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning edit-user" data-id="{{ user.id }}">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                {% if not user.is_admin or users|length > 1 %}
+                                <button class="btn btn-sm btn-danger delete-user" data-id="{{ user.id }}">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier Utilisateur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId" name="id">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editUserEmail" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                        <input type="password" class="form-control" id="editUserPassword" name="password">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="editUserIsAdmin" name="is_admin">
+                        <label class="form-check-label">Administrateur</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- Onglet Commandes -->
+            <div class="tab-pane fade" id="orders" role="tabpanel">
+                <h4><i class="bi bi-receipt"></i> Historique des commandes</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Client</th>
+                                <th>Date</th>
+                                <th>Produits</th>
+                                <th>Total</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.customer_email }}</td>
+                                <td>{{ order.order_date.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>
+                                    <ul>
+                                        {% for item in order.items %}
+                                        <li>{{ item.quantity }} × {{ item.product_name }} ({{ item.price }} €)</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>{{ order.total_amount }} €</td>
+                                <td>
+                                    <select class="form-select status-select" data-order-id="{{ order.id }}">
+                                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>En attente</option>
+                                        <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>En traitement</option>
+                                        <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Expédiée</option>
+                                        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Livrée</option>
+                                        <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Annulée</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('download_invoice', order_id=order.id) }}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-file-earmark-text"></i> Facture
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Aucune commande trouvée</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add the Edit Product Modal (new addition) -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier Produit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm">
+                        <input type="hidden" id="editProductId" name="id">
+                        <div class="mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="editProductName" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Marque</label>
+                            <input type="text" class="form-control" id="editProductBrand" name="brand" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Prix</label>
+                            <input type="number" step="0.01" class="form-control" id="editProductPrice" name="price" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="editProductStock" name="stock" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Couleur</label>
+                            <input type="text" class="form-control" id="editProductColor" name="major_color" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Volume</label>
+                            <input type="number" class="form-control" id="editProductVolume" name="volume" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Matiére</label>
+                            <input type="text" class="form-control" id="editProductSkin" name="skin_type" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Matiére intérieure</label>
+                            <input type="text" class="form-control" id="editProductInner" name="inner_material" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Accessoires</label>
+                            <input type="text" class="form-control" id="editProductAccessoires" name="accessories" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Style</label>
+                            <input type="text" class="form-control" id="editProductStyle" name="bag_style" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="editProductIsAuction" name="is_auction">
+                            <label class="form-check-label">Produit pour enchère</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Keep your existing modals -->
+    <div class="modal fade" id="editAuctionModal" tabindex="-1" aria-hidden="true">
+        <!-- Contenu du modal d'édition d'enchère -->
+    </div>
+
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+        <!-- Contenu du modal d'édition d'utilisateur -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Add product form (keep existing)
+        $('#addProductForm').on('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            
+            $.ajax({
+                url: '/admin/add_product',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if(response.success) {
+                        alert('Produit ajouté avec succès!');
+                        location.reload();
+                    } else {
+                        alert('Erreur: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Erreur: ' + xhr.responseJSON.error);
+                }
+            });
+        });
+
+        // Delete product (new)
+        $(document).on('click', '.delete-product', function() {
+            if(confirm('Êtes-vous sûr de vouloir supprimer ce produit?')) {
+                var productId = $(this).data('id');
+                $.ajax({
+                    url: '/admin/delete_product/' + productId,
+                    type: 'DELETE',
+                    success: function() {
+                        alert('Produit supprimé avec succès');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        alert('Erreur: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+
+        // Edit product (new)
+        $(document).on('click', '.edit-product', function() {
+            var productId = $(this).data('id');
+            var row = $(this).closest('tr');
+            
+            // Get product data from the row
+            var productData = {
+                id: productId,
+                name: row.find('td:eq(2)').text(),
+                price: parseFloat(row.find('td:eq(3)').text().replace(' €', '')),
+                stock: parseInt(row.find('td:eq(4)').text()),
+                major_color:row.find('td:eq(5)').text(),
+                volume:parseInt(row.find('td:eq(6)').text()),
+                skin_type:row.find('td:eq(7)').text(),
+                inner_material:row.find('td:eq(8)').text(),
+                accessories:row.find('td:eq(9)').text(),
+                bag_style:row.find('td:eq(10)').text(),
+                brand:row.find('td:eq(11)').text(),
+                is_auction: row.find('td:eq(12) .badge').hasClass('bg-success')
+            };
+
+            // Populate modal form
+            $('#editProductId').val(productData.id);
+            $('#editProductName').val(productData.name);
+            $('#editProductPrice').val(productData.price);
+            $('#editProductStock').val(productData.stock);
+
+            $('#editProductColor').val(productData.major_color);
+            $('#editProductVolume').val(productData.volume);
+            $('#editProductSkin').val(productData.skin_type);
+            $('#editProductInner').val(productData.inner_material);
+            $('#editProductAccessoires').val(productData.accessories);
+            $('#editProductStyle').val(productData.bag_style);
+            $('#editProductBrand').val(productData.brand);
+            $('#editProductIsAuction').prop('checked', productData.is_auction);
+            
+            // Show modal
+            $('#editProductModal').modal('show');
+        });
+
+        // Update product (fixed version)
+        $('#editProductForm').submit(function(e) {
+            e.preventDefault();
+            var productId = $('#editProductId').val();
+            
+            // Prepare data as JSON
+            var formData = {
+                name: $('#editProductName').val(),
+                price: parseFloat($('#editProductPrice').val()),
+                stock: parseInt($('#editProductStock').val()),
+
+                major_color: $('#editProductColor').val(),
+                volume:parseInt($('#editProductVolume').val()),
+                skin_type: $('#editProductSkin').val(),
+                inner_material:$('#editProductInner').val(),
+                accessories: $('#editProductAccessoires').val(),
+                bag_style: $('#editProductStyle').val(),
+
+                brand: $('#editProductBrand').val(),
+
+                is_auction: $('#editProductIsAuction').is(':checked')
+            };
+            
+            $.ajax({
+                url: '/admin/update_product/' + productId,
+                type: 'PUT',
+                contentType: 'application/json',  // Set content type to JSON
+                data: JSON.stringify(formData),  // Convert to JSON string
+                success: function() {
+                    alert('Produit mis à jour avec succès');
+                    $('#editProductModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    alert('Erreur: ' + xhr.responseJSON.error);
+                }
+            });
+        });
+
+        // Delete auction (new)
+        $(document).on('click', '.delete-auction', function() {
+            if(confirm('Êtes-vous sûr de vouloir supprimer cette enchère?')) {
+                var auctionId = $(this).data('id');
+                $.ajax({
+                    url: '/admin/delete_auction/' + auctionId,
+                    type: 'DELETE',
+                    success: function() {
+                        alert('Enchère supprimée avec succès');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        alert('Erreur: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+
+        // Keep all your existing JavaScript for other functionality
+        $('.status-select').change(function() {
+            const orderId = $(this).data('order-id');
+            const newStatus = $(this).val();
+            
+            $.ajax({
+                url: '/admin/update_order_status',
+                method: 'POST',
+                data: {
+                    order_id: orderId,
+                    status: newStatus
+                },
+                success: function(response) {
+                    alert('Statut mis à jour avec succès');
+                }
+            });
+        });
+        // Add these to your existing JavaScript in admin.html
+
+        // Add user form
+        $('#addUserForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                url: '/admin/add_user',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if(response.success) {
+                        alert('Utilisateur ajouté avec succès!');
+                        location.reload();
+                    } else {
+                        alert('Erreur: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Erreur: ' + xhr.responseJSON.error);
+                }
+            });
+        });
+
+        // Delete user
+        $(document).on('click', '.delete-user', function() {
+            if(confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?')) {
+                var userId = $(this).data('id');
+                $.ajax({
+                    url: '/admin/delete_user/' + userId,
+                    type: 'DELETE',
+                    success: function() {
+                        alert('Utilisateur supprimé avec succès');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        alert('Erreur: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+
+        // Add auction form
+        $('#addAuctionForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                url: '/admin/add_auction',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if(response.success) {
+                        alert('Enchère créée avec succès!');
+                        location.reload();
+                    } else {
+                        alert('Erreur: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Erreur: ' + xhr.responseJSON.error);
+                }
+            });
+        });
+        // Edit user - populate modal
+        $(document).on('click', '.edit-user', function() {
+            var userId = $(this).data('id');
+            
+            $.get('/admin/get_user/' + userId, function(user) {
+                $('#editUserId').val(user.id);
+                $('#editUserEmail').val(user.email);
+                $('#editUserIsAdmin').prop('checked', user.is_admin);
+                $('#editUserPassword').val('');
+                $('#editUserModal').modal('show');
+            }).fail(function() {
+                alert('Erreur lors du chargement des données utilisateur');
+            });
+        });
+
+        // Update user
+        $('#editUserForm').submit(function(e) {
+            e.preventDefault();
+            var userId = $('#editUserId').val();
+            
+            var formData = {
+                email: $('#editUserEmail').val(),
+                is_admin: $('#editUserIsAdmin').is(':checked')
+            };
+            
+            // Only include password if it's not empty
+            var password = $('#editUserPassword').val();
+            if (password) {
+                formData.password = password;
+            }
+            
+            $.ajax({
+                url: '/admin/update_user/' + userId,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if(response.success) {
+                        alert('Utilisateur mis à jour avec succès');
+                        $('#editUserModal').modal('hide');
+                        location.reload();
+                    }
+                },
+                error: function(xhr) {
+                    alert('Erreur: ' + xhr.responseJSON.error);
+                }
+            });
+        });
+    });
+    </script>
+</body>
+</html>
