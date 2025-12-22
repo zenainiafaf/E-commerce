@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Auction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .panel {
+            flex: 1;
+            min-width: 300px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .auction-info {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        input, button, select {
+            padding: 10px;
+            margin: 8px 0;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        button.danger {
+            background-color: #e74c3c;
+        }
+        button.danger:hover {
+            background-color: #c0392b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .timer {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .winner-announcement {
+            padding: 20px;
+            background-color: #d5f5e3;
+            border: 2px solid #27ae60;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .bid-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .bid-increment-options {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .bid-increment-options button {
+            flex: 1;
+            padding: 8px;
+        }
+        .item-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ product.name }} - Auction</h1>
+        <p id="auctionStatus">Auction in progress</p>
+    </div>
+    
+    <div class="auction-info">
+        <div class="container">
+            <div>
+                <h2 id="itemName">{{ product.name }}</h2>
+                <p><strong>Description:</strong> <span id="itemDescription">{{ product.description if product.description else 'No description available' }}</span></p>
+                <p><strong>Base Price:</strong> <span id="basePrice">€{{ "%.2f"|format(product.price) }}</span></p>
+                <p><strong>Minimum Increment:</strong> <span id="minIncrement">€5.00</span></p>
+            </div>
+            <div>
+                <img src="{{ url_for('static', filename='images/' + product.image) }}" alt="{{ product.name }}" class="item-image" id="itemImage">
+            </div>
+        </div>
+        <div class="timer" id="countdown">02:00</div>
+    </div>
+    
+    <div id="winnerSection" style="display: none;">
+        <div class="winner-announcement">
+            <h2>🎉 Auction Finished! 🎉</h2>
+            <p>The item has been sold to <span class="highlight" id="winnerName">None</span></p>
+            <p>Winning Bid: <span class="highlight" id="winningBid">€0.00</span></p>
+            <p>Total Bids Placed: <span id="totalBids">0</span></p>
+            <button id="restartAuction" class="danger">Start New Auction</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Place Your Bid</h2>
+            <form id="bidForm">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" required placeholder="Enter your full name">
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" required placeholder="Enter your registered email">
+                
+                <label for="bidAmount">Bid Amount (€):</label>
+                <input type="number" id="bidAmount" min="{{ product.price }}" step="5" required>
+                
+                <div class="bid-increment-options">
+                    <button type="button" class="quick-bid" data-increment="5">+€5</button>
+                    <button type="button" class="quick-bid" data-increment="10">+€10</button>
+                    <button type="button" class="quick-bid" data-increment="20">+€20</button>
+                </div>
+                
+                <button type="submit" id="bidButton">Submit Bid</button>
+            </form>
+            
+            <div id="currentBid">
+                <h3>Current Highest Bid: <span class="highlight" id="highestBidAmount">€{{ "%.2f"|format(product.price) }}</span></h3>
+                <p>By: <span id="highestBidder">None</span></p>
+                <p>Next Minimum Bid: <span id="nextMinBid">€{{ "%.2f"|format(product.price + 5) }}</span></p>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2>Bid History <span id="bidCount">(0)</span></h2>
+            <div class="bid-history">
+                <table id="bidsTable">
+                    <thead>
+                        <tr>
+                            <th>Bidder</th>
+                            <th>Amount</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bidsTableBody">
+                        <!-- Bids will be added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Auction configuration - now using dynamic values from the page
+        const BASE_PRICE = parseFloat(document.getElementById('basePrice').textContent.replace('€', ''));
+        const MIN_INCREMENT = 5.00;
+        const INITIAL_AUCTION_DURATION = 2 * 60 * 1000; // 2 minutes in milliseconds
+        const AUTO_EXTEND_THRESHOLD = 30 * 1000; // 30 seconds in milliseconds
+        
+        // Auction state
+        let bids = [];
+        let highestBid = { amount: BASE_PRICE, name: "None", email: "" };
+        let auctionEndTime = new Date().getTime() + INITIAL_AUCTION_DURATION;
+        let auctionFinished = false;
+        let auctionPaused = false;
+        let remainingPauseTime = 0;
+        let lastBidTime = null;
+        
+        // DOM elements
+        const countdownElement = document.getElementById('countdown');
+        const bidButton = document.getElementById('bidButton');
+        const winnerSection = document.getElementById('winnerSection');
+        const bidForm = document.getElementById('bidForm');
+        const bidAmountInput = document.getElementById('bidAmount');
+        
+        // Initialize auction
+        function initAuction() {
+            // Set base price and minimum increment
+            bidAmountInput.min = BASE_PRICE.toFixed(2);
+            bidAmountInput.step = MIN_INCREMENT.toFixed(2);
+            
+            // Set initial highest bid display
+            updateHighestBidDisplay();
+            
+            // Setup quick bid buttons
+            document.querySelectorAll('.quick-bid').forEach(button => {
+                button.addEventListener('click', function() {
+                    const increment = parseFloat(this.dataset.increment);
+                    const currentValue = parseFloat(bidAmountInput.value) || highestBid.amount;
+                    bidAmountInput.value = (currentValue + increment).toFixed(2);
+                });
+            });
+            
+            // Start countdown timer
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+        }
+        
+        // Countdown timer
+        function updateCountdown() {
+            if (auctionPaused) return;
+            
+            const now = new Date().getTime();
+            const distance = auctionEndTime - now;
+            
+            if (distance <= 0) {
+                finishAuction();
+                return;
+            }
+            
+            // Calculate time remaining
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Display the result
+            countdownElement.textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Finish auction
+        function finishAuction() {
+            auctionFinished = true;
+            bidButton.disabled = true;
+            document.getElementById('auctionStatus').textContent = "Auction finished";
+            
+            // Show winner section
+            winnerSection.style.display = 'block';
+            
+            // Set winner information
+            document.getElementById('winnerName').textContent = highestBid.name;
+            document.getElementById('winningBid').textContent = `€${highestBid.amount.toFixed(2)}`;
+            document.getElementById('totalBids').textContent = bids.length;
+        }
+        
+        // Handle bid submission
+        bidForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (auctionFinished) {
+                alert("The auction has already finished!");
+                return;
+            }
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const bidAmount = parseFloat(document.getElementById('bidAmount').value);
+            const minNextBid = highestBid.amount + parseFloat(document.getElementById('minIncrement').textContent.replace('€', ''));
+            
+            // Validate bid amount
+            if (bidAmount < BASE_PRICE) {
+                alert(`Your bid must be at least the base price of €${BASE_PRICE.toFixed(2)}`);
+                return;
+            }
+            
+            if (bidAmount < minNextBid) {
+                alert(`Your bid must be at least €${minNextBid.toFixed(2)} (current bid + minimum increment)`);
+                return;
+            }
+            
+            // Verify email exists in database
+            try {
+                const response = await fetch('/verify_email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Email verification failed');
+                }
+                
+                if (!data.valid) {
+                    alert(data.message || 'Email not registered. Please sign up first.');
+                    return;
+                }
+            } catch (error) {
+                console.error('Error verifying email:', error);
+                alert('Error verifying email. Please try again.');
+                return;
+            }
+            
+            // Create new bid
+            const newBid = {
+                name: name,
+                email: email,
+                amount: bidAmount,
+                time: new Date().toLocaleTimeString(),
+                timestamp: new Date().getTime()
+            };
+            
+            // Add to bids array
+            bids.push(newBid);
+            lastBidTime = new Date().getTime();
+            
+            // Update highest bid
+            highestBid = {
+                name: name,
+                amount: bidAmount,
+                email: email
+            };
+            
+            // Update UI
+            updateBidList();
+            updateHighestBidDisplay();
+            
+            // Reset form (keep name/email for convenience)
+            document.getElementById('bidAmount').value = '';
+            document.getElementById('bidAmount').focus();
+        });
+        
+        // Update bid list display
+        function updateBidList() {
+            const tableBody = document.getElementById('bidsTableBody');
+            tableBody.innerHTML = '';
+            
+            // Sort bids by amount (highest first)
+            bids.sort((a, b) => b.amount - a.amount);
+            
+            // Add each bid to the table
+            bids.forEach((bid, index) => {
+                const row = document.createElement('tr');
+                
+                // Highlight current highest bid
+                if (index === 0) {
+                    row.classList.add('highlight');
+                }
+                
+                row.innerHTML = `
+                    <td>${bid.name}</td>
+                    <td>€${bid.amount.toFixed(2)}</td>
+                    <td>${bid.time}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Update bid count
+            document.getElementById('bidCount').textContent = `(${bids.length})`;
+        }
+        
+        // Update highest bid display
+        function updateHighestBidDisplay() {
+            document.getElementById('highestBidAmount').textContent = `€${highestBid.amount.toFixed(2)}`;
+            document.getElementById('highestBidder').textContent = highestBid.name;
+            
+            // Calculate next minimum bid
+            const minIncrement = parseFloat(document.getElementById('minIncrement').textContent.replace('€', ''));
+            const nextMinBid = highestBid.amount + minIncrement;
+            document.getElementById('nextMinBid').textContent = `€${nextMinBid.toFixed(2)}`;
+            
+            // Set suggested bid amount
+            bidAmountInput.placeholder = `Minimum: €${nextMinBid.toFixed(2)}`;
+        }
+        
+        // Initialize the auction when page loads
+        window.addEventListener('DOMContentLoaded', initAuction);
+    </script>
+</body>
+</html>

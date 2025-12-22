@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            background-color: #f8f9fa;
+            border-bottom: 3px solid #A56D47;
+        }
+        .profile-header {
+            background: #A56D47;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            color: white;
+        }
+        .profile-header h1 {
+            margin-bottom: 10px;
+        }
+        .profile-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #A56D47;
+            border-color: #7f5c48;
+        }
+        .btn-primary:hover {
+            background-color: #8a5a3b;
+            border-color: #6b4f34;
+        }
+        .auction-card {
+            margin-bottom: 20px;
+            border-color: #A56D47;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+        }
+        .auction-card .card-header {
+            background-color: #A56D47;
+            color: white;
+        }
+        .order-card {
+            margin-bottom: 20px;
+            border-color: #A56D47;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+        }
+        .order-card .card-header {
+            background-color: #A56D47;
+            color: white;
+        }
+        body {
+            background-color: #F1E1C6;
+        }
+    </style>
+</head>
+<body>
+    <!-- En-tête du profil -->
+    <div class="profile-header">
+        <div class="container">
+            <h1><i class="bi bi-person-circle"></i> Mon Profil</h1>
+            <p>Bienvenue {{ user.email }}</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Mon Compte</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">Mes Commandes</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="auctions-tab" data-bs-toggle="tab" data-bs-target="#auctions" type="button" role="tab">Mes Enchères</button>
+            </li>
+        </ul>
+
+        <div class="tab-content p-3 border border-top-0 rounded-bottom" id="profileTabsContent">
+            <!-- Onglet Informations du compte -->
+            <div class="tab-pane fade show active" id="info" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="profile-section">
+                            <h4><i class="bi bi-pencil-square"></i> Modifier mes informations</h4>
+                            <form id="updateInfoForm" action="/profile/update_info" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="profile-section">
+                            <h4><i class="bi bi-lock"></i> Changer mon mot de passe</h4>
+                            <form id="updatePasswordForm" action="/profile/update_password" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Mot de passe actuel</label>
+                                    <input type="password" class="form-control" name="current_password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Nouveau mot de passe</label>
+                                    <input type="password" class="form-control" name="new_password" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Confirmer le nouveau mot de passe</label>
+                                    <input type="password" class="form-control" name="confirm_password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet Commandes -->
+            <div class="tab-pane fade" id="orders" role="tabpanel">
+                <h4 class="mb-4"><i class="bi bi-receipt"></i> Historique de mes commandes</h4>
+                
+                {% if orders %}
+                    {% for order in orders %}
+                    <div class="card order-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Commande #{{ order.id }} - {{ order.order_date.strftime('%d/%m/%Y %H:%M') }}</span>
+                            <span class="badge bg-primary">{{ order.status_label }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">Total: {{ order.total_amount }} €</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Produit</th>
+                                            <th>Quantité</th>
+                                            <th>Prix unitaire</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in order.items %}
+                                        <tr>
+                                            <td>{{ item.product_name }}</td>
+                                            <td>{{ item.quantity }}</td>
+                                            <td>{{ item.price }} €</td>
+                                            <td>{{ item.price * item.quantity }} €</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a href="{{ url_for('download_invoice', order_id=order.id) }}" class="btn btn-outline-primary mt-2">
+                                <i class="bi bi-file-earmark-text"></i> Télécharger la facture
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Vous n'avez pas encore effectué de commande.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Onglet Enchères -->
+            <div class="tab-pane fade" id="auctions" role="tabpanel">
+                <h4 class="mb-4"><i class="bi bi-trophy"></i> Mes participations aux enchères</h4>
+                
+                {% if participated_auctions %}
+                    {% for auction_data in participated_auctions %}
+                    <div class="card auction-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>{{ auction_data.auction.product.name }}</span>
+                            {% if auction_data.auction.is_active %}
+                                <span class="badge bg-success">En cours</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Terminée</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <img src="{{ url_for('static', filename='images/' + auction_data.auction.product.image) }}" class="img-fluid rounded" alt="{{ auction_data.auction.product.name }}">
+                                </div>
+                                <div class="col-md-8">
+                                    <h5 class="card-title">{{ auction_data.auction.product.name }}</h5>
+                                    <p><strong>Date de fin:</strong> {{ auction_data.auction.end_time.strftime('%d/%m/%Y %H:%M') }}</p>
+                                    <p><strong>Votre meilleure offre:</strong> {{ auction_data.my_best_bid.amount }} €</p>
+                                    <p><strong>Offre actuelle la plus élevée:</strong> {{ auction_data.highest_bid.amount }} € 
+                                       {% if auction_data.highest_bid.user_email == user.email %}
+                                           <span class="badge bg-success">Votre offre</span>
+                                       {% endif %}
+                                    </p>
+                                    
+                                    {% if auction_data.auction.is_active %}
+                                    <a href="{{ url_for('auction_detail', auction_id=auction_data.auction.id) }}" class="btn btn-primary">
+                                        <i class="bi bi-arrow-right-circle"></i> Voir l'enchère
+                                    </a>
+                                    {% else %}
+                                        {% if auction_data.is_winner %}
+                                            <div class="alert alert-success mt-3">
+                                                <i class="bi bi-trophy-fill"></i> Félicitations ! Vous avez remporté cette enchère.
+                                            </div>
+                                        {% else %}
+                                            <div class="alert alert-secondary mt-3">
+                                                <i class="bi bi-info-circle"></i> Vous n'avez pas remporté cette enchère.
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Vous n'avez pas encore participé à des enchères.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Message de succès/erreur modal -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalTitle">Notification</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="messageModalBody">
+                    <!-- Le contenu sera défini par JavaScript -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Check for messages in URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('message')) {
+                const message = urlParams.get('message');
+                const messageType = urlParams.get('type') || 'info';
+                
+                $('#messageModalTitle').text(messageType === 'error' ? 'Erreur' : 'Succès');
+                $('#messageModalBody').text(decodeURIComponent(message));
+                $('#messageModalBody').removeClass().addClass(messageType === 'error' ? 'text-danger' : 'text-success');
+                
+                const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+                messageModal.show();
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            // Form validation for password change
+            $('#updatePasswordForm').submit(function(e) {
+                const newPassword = $('input[name="new_password"]').val();
+                const confirmPassword = $('input[name="confirm_password"]').val();
+                
+                if (newPassword !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Les mots de passe ne correspondent pas.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

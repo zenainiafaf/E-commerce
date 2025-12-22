@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Inscription</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(90deg, #D8B4A6, #F1E1C6); /* Dégradé beige et marron clair */
+      }
+
+      .container {
+        position: relative;
+        width: 850px;
+        height: 550px;
+        background: #fff;
+        border-radius: 30px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+        margin: 20px;
+        overflow: hidden;
+      }
+
+      .form-box {
+        position: absolute;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        color: #4E3629; /* Marron foncé */
+        text-align: center;
+        padding: 40px;
+        z-index: 1;
+        transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
+      }
+
+      .container.active .form-box {
+        right: 50%;
+      }
+
+      .form-box.register {
+        visibility: hidden;
+      }
+
+      .container.active .form-box.register {
+        visibility: visible;
+      }
+
+      form {
+        width: 100%;
+      }
+
+      .container h1 {
+        font-size: 36px;
+        margin: 10px 0;
+        color: #4E3629;
+      }
+
+      .input-box {
+        position: relative;
+        margin: 30px 0;
+      }
+
+      .input-box input {
+        width: 100%;
+        padding: 13px 50px 13px 20px;
+        background: #F1E1C6; /* Beige */
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        color: #4E3629; /* Marron foncé */
+        font-weight: 500;
+      }
+
+      .input-box input::placeholder {
+        color: #A56D47; /* Marron clair */
+        font-weight: 400;
+      }
+
+      .input-box i {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        color: #4E3629; /* Marron foncé */
+      }
+
+      .forgot-link {
+        margin: -15px 0 15px;
+      }
+
+      .forgot-link a {
+        font-size: 14.5px;
+        color: #A56D47; /* Changé pour meilleure visibilité */
+        text-decoration: none;
+      }
+
+      .btn {
+        width: 100%;
+        height: 48px;
+        background-color: #A56D47; /* Marron clair */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      .container p {
+        font-size: 14.5px;
+        margin: 15px 0;
+      }
+
+      .social-icons {
+        display: flex;
+        justify-content: center;
+      }
+
+      .social-icons a {
+        display: inline-flex;
+        padding: 10px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 24px;
+        color: #4E3629; /* Marron foncé */
+        text-decoration: none;
+        margin: 0 8px;
+      }
+
+      .toggle-box {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .toggle-box::before {
+        content: "";
+        position: absolute;
+        left: -250%;
+        width: 300%;
+        height: 100%;
+        background: #A56D47; /* Marron clair */
+        border-radius: 150px;
+        z-index: 2;
+        transition: 1.8s ease-in-out;
+      }
+
+      .container.active .toggle-box::before {
+        left: 50%;
+      }
+
+      .toggle-panel {
+        position: absolute;
+        width: 50%;
+        height: 100%;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+      }
+
+      .toggle-panel.toggle-left {
+        left: 0;
+        transition-delay: 1.2s;
+      }
+
+      .container.active .toggle-panel.toggle-left {
+        left: -50%;
+        transition-delay: 0.6s;
+      }
+
+      .toggle-panel.toggle-right {
+        right: -50%;
+        transition-delay: 0.6s;
+      }
+
+      .container.active .toggle-panel.toggle-right {
+        right: 0;
+        transition-delay: 1.2s;
+      }
+
+      .toggle-panel p {
+        margin-bottom: 20px;
+      }
+
+      .toggle-panel .btn {
+        width: 160px;
+        height: 46px;
+        background: transparent;
+        border: 2px solid #fff;
+        box-shadow: none;
+      }
+
+      .error-message {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 10px;
+        display: none;
+      }
+
+      @media screen and (max-width: 650px) {
+        .container {
+          height: calc(100vh - 40px);
+        }
+
+        .form-box {
+          bottom: 0;
+          width: 100%;
+          height: 70%;
+        }
+
+        .container.active .form-box {
+          right: 0;
+          bottom: 30%;
+        }
+
+        .toggle-box::before {
+          left: 0;
+          top: -270%;
+          width: 100%;
+          height: 300%;
+        }
+
+        .container.active .toggle-box::before {
+          left: 0;
+          top: 70%;
+        }
+
+        .toggle-panel {
+          width: 100%;
+          height: 30%;
+        }
+
+        .toggle-panel.toggle-left {
+          top: 0;
+        }
+
+        .container.active .toggle-panel.toggle-left {
+          left: 0;
+          top: -30%;
+        }
+
+        .toggle-panel.toggle-right {
+          right: 0;
+          bottom: -30%;
+        }
+
+        .container.active .toggle-panel.toggle-right {
+          bottom: 0;
+        }
+      }
+
+      @media screen and (max-width: 450px) {
+        .form-box {
+          padding: 20px;
+        }
+
+        .toggle-panel h1 {
+          font-size: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- login form -->
+      <div class="form-box login">
+        <form action="/login" method="POST">
+          <h1>Connexion</h1>
+          <div class="input-box">
+            <input type="email" name="email" placeholder="Email" required>
+            <i class='bx bxs-envelope'></i>
+          </div>
+          <div class="input-box">
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <i class='bx bxs-lock-alt'></i>
+          </div>
+          <div class="forgot-link">
+            <a href="#">Mot de passe oublié?</a>
+          </div>
+          <button type="submit" class="btn">Connexion</button>
+          <div id="login-error" class="error-message">Email ou mot de passe incorrect</div>
+          
+          <p>ou connectez-vous avec</p>
+          <div class="social-icons">
+            <a href="#"><i class='bx bxl-google'></i></a>
+            <a href="#"><i class='bx bxl-facebook'></i></a>
+            <a href="#"><i class='bx bxl-github'></i></a>
+            <a href="#"><i class='bx bxl-linkedin'></i></a>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Registration -->
+      <div class="form-box register">
+        <form action="/login" method="POST">
+          <h1>Inscription</h1>
+          <div class="input-box">
+            <input type="email" name="email" placeholder="Email" required>
+            <i class='bx bxs-envelope'></i>
+          </div>
+          <div class="input-box">
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <i class='bx bxs-lock-alt'></i>
+          </div>
+          <button type="submit" class="btn">S'inscrire</button>
+          <div id="register-error" class="error-message">Une erreur est survenue lors de l'inscription</div>
+          
+          <p>ou inscrivez-vous avec</p>
+          <div class="social-icons">
+            <a href="#"><i class='bx bxl-google'></i></a>
+            <a href="#"><i class='bx bxl-facebook'></i></a>
+            <a href="#"><i class='bx bxl-github'></i></a>
+            <a href="#"><i class='bx bxl-linkedin'></i></a>
+          </div>
+        </form>
+      </div>
+
+      <!-- Toggle -->
+      <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+          <h1>Bienvenue !</h1>
+          <p>Vous n'avez pas de compte ?</p>
+          <button class="btn register-btn" type="button">S'inscrire</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>Bon retour !</h1>
+          <p>Vous avez déjà un compte ?</p>
+          <button class="btn login-btn" type="button">Se connecter</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const registerBtn = document.querySelector(".register-btn");
+      const loginBtn = document.querySelector(".login-btn");
+      const container = document.querySelector(".container");
+
+      registerBtn.addEventListener("click", () => {
+        container.classList.add("active");
+      });
+
+      loginBtn.addEventListener("click", () => {
+        container.classList.remove("active");
+      });
+      
+      // Affichage des erreurs s'il y en a
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('error')) {
+        const errorType = urlParams.get('error');
+        const errorMessage = document.getElementById(errorType === 'login' ? 'login-error' : 'register-error');
+        if (errorMessage) {
+          errorMessage.style.display = 'block';
+        }
+        
+        // Activer le bon formulaire en fonction de l'erreur
+        if (errorType === 'register') {
+          container.classList.add("active");
+        }
+      }
+      
+      // Si on est redirigé après une tentative de paiement
+      if (urlParams.has('redirect')) {
+        const redirectParam = urlParams.get('redirect');
+        sessionStorage.setItem('redirect_after_login', redirectParam);
+      }
+      // Modification des formulaires pour inclure la redirection
+document.querySelectorAll('form').forEach(form => {
+  form.addEventListener('submit', function(e) {
+    const redirectAfterLogin = sessionStorage.getItem('redirect_after_login');
+    if (redirectAfterLogin) {
+      // Ajouter un champ caché pour la redirection
+      const redirectInput = document.createElement('input');
+      redirectInput.type = 'hidden';
+      redirectInput.name = 'redirect';
+      redirectInput.value = redirectAfterLogin;
+      this.appendChild(redirectInput);
+    }
+  });
+});
+    </script>
+  </body>
+</html>
