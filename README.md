@@ -133,7 +133,7 @@ AI-Handbag-Ecommerce/
 Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/AI-Handbag-Ecommerce.git
+git clone https://github.com/zenainiafaf/AI-Handbag-Ecommerce.git
 ```
 
 Move to the project directory
