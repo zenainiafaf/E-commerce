@@ -166,19 +166,6 @@ AI-Handbag-Ecommerce/
   <img src="images/prediction_sac.png" width="900" alt="AI Price Prediction">
 </p>
 
-The platform integrates a Machine Learning model based on **Random Forest Regression** to estimate the price of a handbag before it is listed for auction.
-
-The prediction is generated from product characteristics such as:
-
-- Brand
-- Bag Style
-- Material
-- Color
-- Capacity (Volume)
-- Accessories
-
-This estimated price assists administrators in defining a competitive and realistic starting price for auctions.
-
 ---
 
 ### 💳 Stripe Payment
