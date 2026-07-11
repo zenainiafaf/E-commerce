@@ -158,55 +158,85 @@ http://127.0.0.1:5000
 
 ---
 
-## 🎥 Demonstration
+## 📸 Application Preview
 
-A complete demonstration of the platform is available below.
-
-Click the preview image to watch the video.
+### 🏠 Home Page
 
 <p align="center">
-  <a href="video/demo.mp4">
-    <img src="docs/images/demo_thumbnail.png"
-         alt="AI-Powered Handbag E-Commerce Platform Demo"
-         width="900">
-  </a>
+  <img src="images/home.png" width="900" alt="Home Page">
 </p>
 
-The demonstration showcases:
+---
 
-- 🏠 Home page
-- 👤 User registration & login
-- 🛍️ Product catalog
-- 🔍 Product search & filtering
-- 🤖 AI-powered recommendations
-- ❤️ Wishlist
-- 🛒 Shopping cart
-- 💳 Checkout
-- 🔨 Online auction system
-- 📦 Order management
-- 👨‍💼 Admin dashboard
+### 🔐 Login
+
+<p align="center">
+  <img src="images/connexion.png" width="900" alt="Login">
+</p>
 
 ---
 
-## 📸 Application Overview
+### 👜 Product Details
 
-The application includes:
-
-- 🏠 Home Page
-- 👜 Product Catalog
-- 📄 Product Details
-- 🔍 Search & Filters
-- 🤖 Recommendation Page
-- ❤️ Wishlist
-- 🛒 Shopping Cart
-- 💳 Checkout
-- 🔨 Auction Page
-- 📦 Order History
-- 👤 User Profile
-- 👨‍💼 Admin Dashboard
+<p align="center">
+  <img src="images/detail_sac.png" width="900" alt="Product Details">
+</p>
 
 ---
 
+### 🔨 Online Auction
+
+<p align="center">
+  <img src="images/auction.png" width="900" alt="Auction">
+</p>
+
+---
+
+### 💳 Stripe Payment
+
+<p align="center">
+  <img src="images/payment_stripe.png" width="900" alt="Stripe Payment">
+</p>
+
+---
+
+### 👤 User Profile
+
+<p align="center">
+  <img src="images/profile.png" width="900" alt="User Profile">
+</p>
+
+---
+
+### 👨‍💼 Admin Dashboard – Product Management
+
+<p align="center">
+  <img src="images/admin_produits.png" width="900" alt="Admin Products">
+</p>
+
+---
+
+### 👥 Admin Dashboard – User Management
+
+<p align="center">
+  <img src="images/admin_user.png" width="900" alt="Admin Users">
+</p>
+
+---
+
+### 📦 Admin Dashboard – Order Management
+
+<p align="center">
+  <img src="images/admin_commandes.png" width="900" alt="Admin Orders">
+</p>
+
+---
+
+### 🔨 Admin Dashboard – Auction Management
+
+<p align="center">
+  <img src="images/admin_enchere.png" width="900" alt="Admin Auction">
+</p>
 ## 🚀 Future Improvements
 
 - Deep Learning recommendation models
