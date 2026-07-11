@@ -163,7 +163,7 @@ AI-Handbag-Ecommerce/
 ### 🤖 AI Price Prediction
 
 <p align="center">
-  <img src="images/prediction.png" width="900" alt="AI Price Prediction">
+  <img src="images/prediction_sac.png" width="900" alt="AI Price Prediction">
 </p>
 
 The platform integrates a Machine Learning model based on **Random Forest Regression** to estimate the price of a handbag before it is listed for auction.
