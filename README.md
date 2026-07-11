@@ -127,37 +127,6 @@ AI-Handbag-Ecommerce/
 ```
 
 ---
-
-## 🚀 Installation
-
-Clone the repository
-
-```bash
-git clone https://github.com/zenainiafaf/E-commerce.git
-```
-
-Move to the project directory
-
-```bash
-cd E-commerce
-```
-
-Run the application
-
-```bash
-python app.py
-```
-
-Open your browser
-
-```
-http://127.0.0.1:5000
-```
-
-
-
----
-
 ## 📸 Application Preview
 
 ### 🏠 Home Page
@@ -176,11 +145,39 @@ http://127.0.0.1:5000
 
 ---
 
+### 👤 User Profile
+
+<p align="center">
+<img src="images/profile.png" width="900">
+</p>
+
+---
 ### 👜 Product Details
 
 <p align="center">
 <img src="images/detail_sac.png" width="900">
 </p>
+
+---
+
+### 🤖 AI Price Prediction
+
+<p align="center">
+  <img src="images/prediction.png" width="900" alt="AI Price Prediction">
+</p>
+
+The platform integrates a Machine Learning model based on **Random Forest Regression** to estimate the price of a handbag before it is listed for auction.
+
+The prediction is generated from product characteristics such as:
+
+- Brand
+- Bag Style
+- Material
+- Color
+- Capacity (Volume)
+- Accessories
+
+This estimated price assists administrators in defining a competitive and realistic starting price for auctions.
 
 ---
 
@@ -192,13 +189,6 @@ http://127.0.0.1:5000
 
 ---
 
-### 👤 User Profile
-
-<p align="center">
-<img src="images/profile.png" width="900">
-</p>
-
----
 
 ### 🔨 Online Auction
 
@@ -238,6 +228,33 @@ http://127.0.0.1:5000
 <img src="images/admin_enchere.png" width="900">
 </p>
 
+---
+
+## 🚀 Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/zenainiafaf/E-commerce.git
+```
+
+Move to the project directory
+
+```bash
+cd E-commerce
+```
+
+Run the application
+
+```bash
+python app.py
+```
+
+Open your browser
+
+```
+http://127.0.0.1:5000
+```
 ---
 
 ## 🚀 Future Improvements
