@@ -117,14 +117,12 @@ Administrators can:
 AI-Handbag-Ecommerce/
 │
 ├── images/                  # README screenshots
-├── video/                   # Project demonstration
 ├── static/                  # CSS, JavaScript, uploaded images
 ├── templates/               # HTML templates
 ├── instance/                # SQLite database
 │
 ├── app.py                   # Main Flask application
 ├── recommendation_model.pkl # Trained Random Forest model
-├── requirements.txt
 └── README.md
 ```
 
