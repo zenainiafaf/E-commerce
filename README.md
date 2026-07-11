@@ -133,19 +133,13 @@ AI-Handbag-Ecommerce/
 Clone the repository
 
 ```bash
-git clone https://github.com/zenainiafaf/AI-Handbag-Ecommerce.git
+git clone https://github.com/zenainiafaf/E-commerce.git
 ```
 
 Move to the project directory
 
 ```bash
-cd AI-Handbag-Ecommerce
-```
-
-Install the required packages
-
-```bash
-pip install -r requirements.txt
+cd E-commerce
 ```
 
 Run the application
