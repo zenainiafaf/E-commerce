@@ -244,25 +244,13 @@ http://127.0.0.1:5000
 ```
 ---
 
-## 🚀 Future Improvements
-
-- Improve the price prediction model using Gradient Boosting or XGBoost
-- Image-based handbag price estimation
-- Advanced analytics dashboard
-- Email notifications
-- Product reviews and ratings
-- Mobile application
-- Multi-language support
-
----
-
 ## 👩‍💻 Author
 
 **Farah Zenaini**
 
 Master's Student in Artificial Intelligence
 
-University of Science and Technology Houari Boumediene (USTHB)
+
 
 ---
 
